@@ -7,7 +7,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { faBookmark, faHome,  faSearch, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import DetailScreen from '../Views/Detail';
-import { PromoScreen } from '../Views/PromoScreen';
 
 
 const Stack = createNativeStackNavigator();

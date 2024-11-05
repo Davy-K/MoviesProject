@@ -1,47 +1,39 @@
+import axios from 'axios';
+import {REACT_APP_API_KEY} from '@env';
 
-export const fetchPopularMovies = async () => {
+const BASE_URL = 'https://api.themoviedb.org/3';
+
+const api = axios.create({
+    baseURL: BASE_URL,
+    params: {
+      api_key: REACT_APP_API_KEY,
+    },
+  });
+
+
+export const fetchBestMovies = async () => {
     try {
-        const options = {
-            method: 'GET',
-            headers: {
-                accept: 'application/json',
-                Authorization: process.env.API_ACCESS_TOKEN,
-            },
-        };
+        const response = await api.get('/movie/popular?page=1', {
 
-        const response = await fetch('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1', options);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data.results;
+          });
+        return response.data.results;
     } catch (error) {
-        console.error('Error fetching popular movies:', error);
-        return null;
+        console.error('Error fetching Best movies:', error);
+        throw error;
     }
 };
 
-export const fetchFavoriteMovies = async () => {
-    try{
-        const options = {
-            method: 'GET',
-            headers: {
-                accept: 'application/json',
-                Authorization: process.env.API_ACCESS_TOKEN,
-            },
-        };
-
-        const response = await fetch('https://api.themoviedb.org/3/account/21572239/favorite/movies?language=en-US&page=1&sort_by=created_at.asc', options);
-        if (!response.ok) {
-            throw new Error(`HTTP error! ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data.results;
-
-    }catch (error) {
-        console.error('Error fetching favorite movies:', error);
-        return null;
+export const fetchMarvelMovies = async () => {
+    try {
+      const response = await api.get('/discover/movie', {
+        params: {
+          with_companies: 420,
+        },
+      });
+      return response.data.results;
+    } catch (error) {
+        console.error('Error fetching Marvel movies:', error);
+      throw error;
     }
-}
+  };
+

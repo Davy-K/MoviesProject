@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, Text, View, TouchableOpacity, StyleSheet,  FlatList } from 'react-native';
 import { Movies } from './MoviesList';
-import { fetchPopularMovies, fetchTrendingMovies } from '../Providers/callAPI';
+import { fetchBestMovies, fetchMarvelMovies } from '../Providers/callAPI';
 
 export const PromoScreen = () => {
     return (
@@ -19,37 +19,58 @@ export const PromoScreen = () => {
         </View>
     );
 };
-export const Item = ({title, category, setCategory}) => (
+export const Item = ({title, value, category, setCategory}) => (
     <TouchableOpacity
       style={[
         styles.item,
-        category === title && styles.activeItem,
+        category.label === title && styles.activeItem,
       ]}
-      onPress={() => setCategory(title)}>
+      onPress={() => setCategory({label:title, value})}>
 
       <Text style={[
         styles.title,
-        category === title && styles.activeTitle,
+        category.label === title && styles.activeTitle,
       ]}>{title}</Text>
     </TouchableOpacity>
 );
+const DATA = [
+    {label:'All', value:0},
+    {label: 'Action', value:28},
+    {label: 'Romance', value: 10749},
+    {label: 'Comedy', value:35},
+    {label:'Horror',value:27},
+    {label:'Family', value:10751}
+];
 
 const HomeScreen = () => {
-    const [category, setCategory] = useState('All');
-    const DATA = ['All', 'Romance', 'Sport', 'Kids', 'Horror'];
-    const [movies, setMovies] = useState([]);
-    const [favoriteMovies, setFavoriteMovies] = useState([]);
+    const [category, setCategory] = useState(DATA[0]);
+    const [bestMovies, setBestMovies] = useState([]);
+    const [bestMoviesFiltered, setBestMoviesFiltered] = useState([]);
+    const [marvelMovies, setMarvelMovies] = useState([]);
+    const [marvelMoviesFiltered, setMarvelMoviesFiltered] = useState([]);
+
+    const onChangeCategory = (item) => {
+        let newBestMovies = bestMovies;
+        let newMarvelMovies = marvelMovies;
+        if(item.label !== 'All'){
+            newBestMovies = bestMovies.filter((movie) => movie.genre_ids.includes(item.value));
+            newMarvelMovies = marvelMovies.filter((movie) => movie.genre_ids.includes(item.value));
+        }
+        setBestMoviesFiltered(newBestMovies);
+        setMarvelMoviesFiltered(newMarvelMovies);
+        setCategory(item);
+    };
 
     useEffect(() => {
-        const getPopularMovies = async () => {
-            setMovies(await fetchPopularMovies());
+        const getBestMovies = async () => {
+            setBestMovies(await fetchBestMovies());
         };
-        const getFavoriteMovies = async () => {
-            setFavoriteMovies(await fetchTrendingMovies());
+        const getMarvelMovies = async () => {
+            setMarvelMovies(await fetchMarvelMovies());
         };
 
-        getPopularMovies();
-        getFavoriteMovies();
+        getBestMovies();
+        getMarvelMovies();
    }, []);
 
     return (
@@ -63,8 +84,8 @@ const HomeScreen = () => {
                     <FlatList
                         horizontal
                         data={DATA}
-                        renderItem={({item}) => <Item title={item} category={category} setCategory={setCategory}/>}
-                        keyExtractor={item => item}
+                        renderItem={({item}) => <Item title={item.label} value={item.value} category={category} setCategory={(newItem) => onChangeCategory(newItem)}/>}
+                        keyExtractor={item => item.value}
                     />
                 </View>
                 <View style={styles.heroOverlay}>
@@ -79,9 +100,8 @@ const HomeScreen = () => {
                 </View>
             </View>
             <View>
-                <Movies data={movies} title={'Popular Movies'}/>
-                <Movies data={favoriteMovies} title={'Favorite Movies'}/>
-
+                <Movies data={category.label === 'All' ? bestMovies : bestMoviesFiltered} title={'Best Movies'}/>
+                <Movies data={category.label === 'All' ? marvelMovies : marvelMoviesFiltered} title={'Marvel Movies'}/>
                 <PromoScreen />
             </View>
         </ScrollView>
