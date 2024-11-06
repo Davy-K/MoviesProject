@@ -13,9 +13,11 @@ export const Movies = ({data, title}) => {
                 data={data}
                 keyExtractor={item => item.id}
                 renderItem={({ item }) => (
-                    <TouchableOpacity style={{marginRight: 10, alignItems: 'center'}} onPress={() => navigation.navigate('Detail', { poster_path: item.poster_path, title: item.title, description: item.overview })}>
+                    <TouchableOpacity style={{marginRight: 10}} onPress={() => navigation.navigate('Detail', { poster_path: item.poster_path, title: item.title, description: item.overview })}>
                         <Image source={{ uri: `https://image.tmdb.org/t/p/w500${item.poster_path}` }} style={{width:150, height:200, borderRadius: 10}} />
-                        <Text style={{color: '#fff', fontSize: 12}}>{item.title}</Text>
+                         <Text style={{ color: '#fff', fontSize: 12 }}>
+                            {item.title.length > 20 ? item.title.substring(0, 20) + '...' : item.title}
+                        </Text>
                     </TouchableOpacity>
                 )}
                 horizontal
