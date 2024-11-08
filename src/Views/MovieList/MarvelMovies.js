@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 
-export const Movies = ({data, title}) => {
+export const MarvelMovies = ({data, title}) => {
     const navigation = useNavigation();
 
     return (

@@ -37,27 +37,16 @@ export const fetchMarvelMovies = async () => {
     }
 };
 
-
-export const fetchFavoriteMovies = async () => {
-    try{
-      const options = {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          Authorization: REACT_APP_ACCESS_TOKEN,
-        },
-      };
-      let response = [];
-      await fetch('https://api.themoviedb.org/3/account/21572239/favorite/movies?language=en-US&page=1&sort_by=created_at.asc', options)
-      .then(res => res.json())
-      .then(res => {
-        response = res;
-      });
-      return response.results;
-        // const response = await api.get('/account/21572239/favorite/movies?language=en-US&page=1&sort_by=created_at.asc');
-        // return response.data.results;
-    } catch (error) {
-        console.error('Error fetching Favorite movies:', error);
+export const fecthTrendingMovies = async () => {
+  try{
+    const response = await api.get('/trending/movie/week', {
+      params : {
+        language: 'en-US',
+      },
+    });
+    return response.data.results.slice(0, 5);
+  } catch (error) {
+        console.error('Error fetching Trending movies:', error);
       throw error;
     }
-};
+}
