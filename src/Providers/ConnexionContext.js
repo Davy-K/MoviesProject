@@ -11,7 +11,7 @@ export const useConnexionProvider = () => {
 };
 
 export const ConnexionProvider = ({ children }) => {
-    const [isConnected, setIsConnected] = useState(true);
+    const [isConnected, setIsConnected] = useState(false);
 
     return (
         <ConnexionContext.Provider value={{ isConnected, setIsConnected }}>
